@@ -16,6 +16,20 @@ const AvgDisplay = ({label, count, total}) => {
   return <div>{label}: {count / total * 100} %</div>
 }
 
+const Statistics = ({good, neutral, bad, total, avgCount}) => {
+  return (
+    <div>
+      <h1>statistics</h1>
+      <Counter label={"good"} value={good} />
+      <Counter label={"neutral"} value={neutral} />
+      <Counter label={"bad"} value={bad} />
+      <Counter label={"total"} value={total} />
+      <RatioDisplay label={"average"} count={avgCount} total={total} />
+      <AvgDisplay label={"positive"} count={good} total={total} />
+    </div>
+  )
+}
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
@@ -45,13 +59,13 @@ const App = () => {
         handleClick={statUpdater(setBad, bad, -1)}
         btnText={"bad"}
       />
-      <h1>statistics</h1>
-      <Counter label={"good"} value={good} />
-      <Counter label={"neutral"} value={neutral} />
-      <Counter label={"bad"} value={bad} />
-      <Counter label={"total"} value={total} />
-      <RatioDisplay label={"average"} count={avgCount} total={total} />
-      <AvgDisplay label={"positive"} count={good} total={total} />
+      <Statistics
+        good={good}
+        neutral={neutral}
+        bad={bad}
+        total={total}
+        avgCount={avgCount}
+      />
     </div>
   )
 }
