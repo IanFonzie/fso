@@ -17,17 +17,21 @@ const AvgDisplay = ({label, count, total}) => {
 }
 
 const Statistics = ({good, neutral, bad, total, avgCount}) => {
-  return (
-    <div>
-      <h1>statistics</h1>
-      <Counter label={"good"} value={good} />
-      <Counter label={"neutral"} value={neutral} />
-      <Counter label={"bad"} value={bad} />
-      <Counter label={"total"} value={total} />
-      <RatioDisplay label={"average"} count={avgCount} total={total} />
-      <AvgDisplay label={"positive"} count={good} total={total} />
-    </div>
-  )
+  if (total > 0) {
+    return (
+      <div>
+        <h1>statistics</h1>
+        <Counter label={"good"} value={good} />
+        <Counter label={"neutral"} value={neutral} />
+        <Counter label={"bad"} value={bad} />
+        <Counter label={"total"} value={total} />
+        <RatioDisplay label={"average"} count={avgCount} total={total} />
+        <AvgDisplay label={"positive"} count={good} total={total} />
+      </div>
+    )
+  } else {
+    return <p>No feedback given</p>
+  }
 }
 
 const App = () => {
