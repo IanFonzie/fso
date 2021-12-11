@@ -4,16 +4,8 @@ const Button = ({handleClick, btnText}) => {
   return <button onClick={handleClick}>{btnText}</button>
 }
 
-const Counter = ({label, value}) => {
+const StatisticLine = ({label, value}) => {
   return <div>{label}: {value}</div>
-}
-
-const RatioDisplay = ({label, count, total}) => {
-  return <div>{label}: {count / total}</div>
-}
-
-const AvgDisplay = ({label, count, total}) => {
-  return <div>{label}: {count / total * 100} %</div>
 }
 
 const Statistics = ({good, neutral, bad, total, avgCount}) => {
@@ -21,12 +13,12 @@ const Statistics = ({good, neutral, bad, total, avgCount}) => {
     return (
       <div>
         <h1>statistics</h1>
-        <Counter label={"good"} value={good} />
-        <Counter label={"neutral"} value={neutral} />
-        <Counter label={"bad"} value={bad} />
-        <Counter label={"total"} value={total} />
-        <RatioDisplay label={"average"} count={avgCount} total={total} />
-        <AvgDisplay label={"positive"} count={good} total={total} />
+        <StatisticLine label={"good"} value={good} />
+        <StatisticLine label={"neutral"} value={neutral} />
+        <StatisticLine label={"bad"} value={bad} />
+        <StatisticLine label={"total"} value={total} />
+        <StatisticLine label={"average"} value={avgCount / total} />
+        <StatisticLine label={"positive"} value={`${good / total * 100} %`} />
       </div>
     )
   } else {
