@@ -30,7 +30,9 @@ const App = () => {
       .then(response => setCountries(response.data))
   }, [])
 
-  const handleChange = event => setFilter(event.target.value.toLowerCase())
+  const handleChange = event => setFilter(event.target.value)
+
+  const handleShow = (countryName) => () => setFilter(countryName)
 
   let toDisplay
   if (filter) {
@@ -43,7 +45,24 @@ const App = () => {
     } else if (results.length === 1) {
       toDisplay = <Country country={results[0]}/>
     } else {
-      toDisplay = results.map(result => <div key={result.name.official}>{result.name.common}</div>)
+      toDisplay = results
+        .sort(({name: {common: c1Name}}, {name: {common: c2Name}}) => { 
+          if (c1Name < c2Name) {
+            return -1
+          }
+          if (c1Name > c2Name) {
+            return 1
+          }
+          return 0
+        })
+        .map(result => {
+          return (
+            <div key={result.name.official}>
+              {result.name.common}
+              <button onClick={handleShow(result.name.common)}>show</button> 
+            </div>
+          )
+        })
     }
   }
   
