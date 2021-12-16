@@ -25,18 +25,35 @@ const App = () => {
 
     // Keep names unique.
     const exists = persons.find(person => person.name === newName)
+    const upsertPerson = {name: newName, number: newNumber}
     if (!exists) {
+      return personService
+      .create(upsertPerson)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
+    } 
+    const replacementMsg = `${newName} is already added to the phonebook, ` +
+                            `replace the old number with a new one?`
+    if (window.confirm(replacementMsg)) {
       personService
-        .create({name: newName, number: newNumber})
+        .update(exists.id, upsertPerson)
         .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson))
+          setPersons(persons.map(person => {
+            return person.id !== returnedPerson.id ?
+              person :
+              returnedPerson
+          }))
           setNewName('')
           setNewNumber('')
         })
-      return
+        .catch(_ => {
+          alert(`The person with ID '${exists.id}' was already deleted from server`)
+          setPersons(persons.filter(person => person.id !== exists.id))
+        })
     }
-
-    alert(`${newName} is already added to the phonebook`)
   }
 
   const deletePerson = personToDelete => {
@@ -44,7 +61,7 @@ const App = () => {
       personService
         .remove(personToDelete.id)
         .catch(_ => {
-          alert(`the person with ID '${personToDelete.id}' was already deleted from server`)
+          alert(`The person with ID '${personToDelete.id}' was already deleted from server`)
         })
         .finally(_ => setPersons(persons.filter(person => person.id !== personToDelete.id)))
     }
