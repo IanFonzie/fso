@@ -39,6 +39,17 @@ const App = () => {
     alert(`${newName} is already added to the phonebook`)
   }
 
+  const deletePerson = personToDelete => {
+    if (window.confirm(`Delete ${personToDelete.name}?`)) {
+      personService
+        .remove(personToDelete.id)
+        .catch(_ => {
+          alert(`the person with ID '${personToDelete.id}' was already deleted from server`)
+        })
+        .finally(_ => setPersons(persons.filter(person => person.id !== personToDelete.id)))
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -52,7 +63,7 @@ const App = () => {
         handleSubmit={handleSubmit} 
       />
       <h3>Numbers</h3>
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} filter={filter} deletePersonWhoIs={person => deletePerson(person)}/>
     </div>
   )
 }
