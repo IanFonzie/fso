@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
+import './index.css'
+
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 import personService from './services/persons'
 
@@ -11,6 +14,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -33,6 +37,8 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        setMessage({type: 'success', value: `Added ${newName}`})
+        setTimeout(() => setMessage(null), 5000)
       })
     } 
     const replacementMsg = `${newName} is already added to the phonebook, ` +
@@ -48,6 +54,8 @@ const App = () => {
           }))
           setNewName('')
           setNewNumber('')
+          setMessage({type: 'success', value: `Changed ${newName}'s number`})
+          setTimeout(() => setMessage(null), 5000)
         })
         .catch(_ => {
           alert(`The person with ID '${exists.id}' was already deleted from server`)
@@ -70,6 +78,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter value={filter} handleChange={handleChange(setFilter)} />
       <h3>add a new</h3>
       <PersonForm
