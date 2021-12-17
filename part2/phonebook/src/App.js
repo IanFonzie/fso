@@ -24,6 +24,11 @@ const App = () => {
 
   const handleChange = (setState) => event => setState(event.target.value)
 
+  const flashNotification = (type, message) => {
+    setMessage({type, value: message})
+    setTimeout(() => setMessage(null), 5000)
+  }
+
   const handleSubmit = event => {
     event.preventDefault()
 
@@ -37,8 +42,7 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
-        setMessage({type: 'success', value: `Added ${newName}`})
-        setTimeout(() => setMessage(null), 5000)
+        flashNotification('success', `Added ${newName}`)
       })
     } 
     const replacementMsg = `${newName} is already added to the phonebook, ` +
@@ -54,11 +58,11 @@ const App = () => {
           }))
           setNewName('')
           setNewNumber('')
-          setMessage({type: 'success', value: `Changed ${newName}'s number`})
-          setTimeout(() => setMessage(null), 5000)
+          flashNotification('success', `Changed ${newName}'s number`)
         })
         .catch(_ => {
-          alert(`The person with ID '${exists.id}' was already deleted from server`)
+          const errorMsg = `Information of ${newName} has already been removed from the server`
+          flashNotification('error', errorMsg)
           setPersons(persons.filter(person => person.id !== exists.id))
         })
     }
@@ -69,7 +73,9 @@ const App = () => {
       personService
         .remove(personToDelete.id)
         .catch(_ => {
-          alert(`The person with ID '${personToDelete.id}' was already deleted from server`)
+          const errorMsg = `Information of ${[personToDelete.name]} has already been removed ` +
+                           `from the server`
+          flashNotification('error', errorMsg)
         })
         .finally(_ => setPersons(persons.filter(person => person.id !== personToDelete.id)))
     }
