@@ -77,7 +77,10 @@ const App = () => {
                            `from the server`
           flashNotification('error', errorMsg)
         })
-        .finally(_ => setPersons(persons.filter(person => person.id !== personToDelete.id)))
+        .finally(_ => {
+          flashNotification('success', `Deleted ${personToDelete.name}`)
+          setPersons(persons.filter(person => person.id !== personToDelete.id))
+        })
     }
   }
 
