@@ -44,6 +44,9 @@ const App = () => {
         setNewNumber('')
         flashNotification('success', `Added ${newName}`)
       })
+      .catch(error => {
+        flashNotification('error', error.response.data.error)
+      })
     } 
     const replacementMsg = `${newName} is already added to the phonebook, ` +
                             `replace the old number with a new one?`
@@ -60,10 +63,17 @@ const App = () => {
           setNewNumber('')
           flashNotification('success', `Changed ${newName}'s number`)
         })
-        .catch(_ => {
-          const errorMsg = `Information of ${newName} has already been removed from the server`
+        .catch(error => {
+          const status = error.response.status
+          
+          let errorMsg
+          if (status === 400) {
+            errorMsg = error.response.data.error
+          } else {
+            errorMsg = `Information of ${newName} has already been removed from the server`
+            setPersons(persons.filter(person => person.id !== exists.id))
+          }
           flashNotification('error', errorMsg)
-          setPersons(persons.filter(person => person.id !== exists.id))
         })
     }
   }
@@ -72,13 +82,15 @@ const App = () => {
     if (window.confirm(`Delete ${personToDelete.name}?`)) {
       personService
         .remove(personToDelete.id)
+        .then(_ => {
+          flashNotification('success', `Deleted ${personToDelete.name}`)
+        })
         .catch(_ => {
           const errorMsg = `Information of ${[personToDelete.name]} has already been removed ` +
                            `from the server`
           flashNotification('error', errorMsg)
         })
         .finally(_ => {
-          flashNotification('success', `Deleted ${personToDelete.name}`)
           setPersons(persons.filter(person => person.id !== personToDelete.id))
         })
     }
