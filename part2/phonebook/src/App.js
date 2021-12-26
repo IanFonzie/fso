@@ -25,7 +25,7 @@ const App = () => {
   const handleChange = (setState) => event => setState(event.target.value)
 
   const flashNotification = (type, message) => {
-    setMessage({type, value: message})
+    setMessage({ type, value: message })
     setTimeout(() => setMessage(null), 5000)
   }
 
@@ -34,22 +34,22 @@ const App = () => {
 
     // Keep names unique.
     const exists = persons.find(person => person.name === newName)
-    const upsertPerson = {name: newName, number: newNumber}
+    const upsertPerson = { name: newName, number: newNumber }
     if (!exists) {
       return personService
-      .create(upsertPerson)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-        flashNotification('success', `Added ${newName}`)
-      })
-      .catch(error => {
-        flashNotification('error', error.response.data.error)
-      })
-    } 
+        .create(upsertPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          flashNotification('success', `Added ${newName}`)
+        })
+        .catch(error => {
+          flashNotification('error', error.response.data.error)
+        })
+    }
     const replacementMsg = `${newName} is already added to the phonebook, ` +
-                            `replace the old number with a new one?`
+                            'replace the old number with a new one?'
     if (window.confirm(replacementMsg)) {
       personService
         .update(exists.id, upsertPerson)
@@ -65,7 +65,7 @@ const App = () => {
         })
         .catch(error => {
           const status = error.response.status
-          
+
           let errorMsg
           if (status === 400) {
             errorMsg = error.response.data.error
@@ -82,15 +82,15 @@ const App = () => {
     if (window.confirm(`Delete ${personToDelete.name}?`)) {
       personService
         .remove(personToDelete.id)
-        .then(_ => {
+        .then(() => {
           flashNotification('success', `Deleted ${personToDelete.name}`)
         })
-        .catch(_ => {
+        .catch(() => {
           const errorMsg = `Information of ${[personToDelete.name]} has already been removed ` +
-                           `from the server`
+                           'from the server'
           flashNotification('error', errorMsg)
         })
-        .finally(_ => {
+        .finally(() => {
           setPersons(persons.filter(person => person.id !== personToDelete.id))
         })
     }
@@ -107,7 +107,7 @@ const App = () => {
         handleNameChange={handleChange(setNewName)}
         numberValue={newNumber}
         handleNumberChange={handleChange(setNewNumber)}
-        handleSubmit={handleSubmit} 
+        handleSubmit={handleSubmit}
       />
       <h3>Numbers</h3>
       <Persons persons={persons} filter={filter} deletePersonWhoIs={person => deletePerson(person)}/>
